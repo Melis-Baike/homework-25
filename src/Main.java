@@ -22,21 +22,27 @@ public class Main {
 
     public static void chooseMeaningToHuman(Human human, Computer computer){
         System.out.println("1 - Rock\n2 - Paper\n3 - Scissors");
+        System.out.println("If you want to leave from game - enter 4");
         System.out.print("Enter the value you want to select : ");
-        int meaning = 0;
         try {
-            meaning = Integer.parseInt(sc.next());
+            int meaning = Integer.parseInt(sc.next());
             checkOutOfRange(meaning);
+            if(meaning == 4){
+                System.out.println("Good bye!");
+            } else {
+                takeChosenMeaning(human, meaning, computer);
+            }
         } catch (NumberFormatException e){
-            e.printStackTrace();
+            System.out.println("You entered not numeric value");
+            chooseMeaningToHuman(human, computer);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println("You entered wrong number!");
+            chooseMeaningToHuman(human,computer);
         }
-        takeChosenMeaning(human, meaning, computer);
     }
 
     public static void checkOutOfRange(int number) throws Exception{
-        if(number < 1 || number > 3){
+        if(number < 1 || number > 4){
             throw new OutOfRangeException("You are out of range");
         }
     }
@@ -49,9 +55,13 @@ public class Main {
             case 2 : human.meaning = Meanings.PAPER;
                 break;
             case 3 : human.meaning = Meanings.SCISSORS;
+                break;
         }
+        System.out.println("Person - " + human.meaning);
+        System.out.println("Computer - " + computer.meaning);
         toCount(human);
         toCount(computer);
+        chooseMeaningToHuman(human, computer);
     }
 
     public static void selectMeaningToComputer(Computer computer){
@@ -73,7 +83,7 @@ public class Main {
         } else if (participant.meaning == participant.enemy.meaning){
             participant.drawCheck++;
         }
-        System.out.println(participant.name + " - " + participant.check);
-        System.out.println(participant.name + " - " + participant.drawCheck);
+        System.out.println("Check of " + participant.name + " ( wins ) - " + participant.check);
+        System.out.println("Check of " + participant.name + " ( draws ) - " + participant.drawCheck);
     }
 }
