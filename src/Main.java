@@ -16,11 +16,12 @@ public class Main {
         human.setName("Person");
         computer.setEnemy(human);
         human.setEnemy(computer);
-        selectMeaningToComputer(computer);
-        chooseMeaningToHuman(human, computer);
+        int count = 0;
+        chooseMeaningToHuman(human, computer, count);
     }
 
-    public static void chooseMeaningToHuman(Human human, Computer computer){
+    public static void chooseMeaningToHuman(Human human, Computer computer, int count){
+        selectMeaningToComputer(computer);
         System.out.println("1 - Rock\n2 - Paper\n3 - Scissors");
         System.out.println("If you want to leave from game - enter 4");
         System.out.print("Enter the value you want to select : ");
@@ -28,16 +29,21 @@ public class Main {
             int meaning = Integer.parseInt(sc.next());
             checkOutOfRange(meaning);
             if(meaning == 4){
+                if(count!=0) {
+                    System.out.println("Total results");
+                    printResults(human, computer);
+                }
                 System.out.println("Good bye!");
             } else {
-                takeChosenMeaning(human, meaning, computer);
+                count++;
+                takeChosenMeaning(human, meaning, computer, count);
             }
         } catch (NumberFormatException e){
             System.out.println("You entered not numeric value");
-            chooseMeaningToHuman(human, computer);
+            chooseMeaningToHuman(human, computer, count);
         } catch (Exception e) {
             System.out.println("You entered wrong number!");
-            chooseMeaningToHuman(human,computer);
+            chooseMeaningToHuman(human,computer, count);
         }
     }
 
@@ -48,7 +54,7 @@ public class Main {
     }
 
 
-    public static void takeChosenMeaning(Human human, int meaning, Computer computer){
+    public static void takeChosenMeaning(Human human, int meaning, Computer computer, int count){
         switch (meaning) {
             case 1 : human.meaning = Meanings.ROCK;
                 break;
@@ -61,7 +67,8 @@ public class Main {
         System.out.println("Computer - " + computer.meaning);
         toCount(human);
         toCount(computer);
-        chooseMeaningToHuman(human, computer);
+        System.out.println("-----------------------------------------------------------");
+        chooseMeaningToHuman(human, computer, count);
     }
 
     public static void selectMeaningToComputer(Computer computer){
@@ -83,7 +90,35 @@ public class Main {
         } else if (participant.meaning == participant.enemy.meaning){
             participant.drawCheck++;
         }
-        System.out.println("Check of " + participant.name + " ( wins ) - " + participant.check);
-        System.out.println("Check of " + participant.name + " ( draws ) - " + participant.drawCheck);
+        System.out.println("Number wins of " + participant.name + " : " + participant.check);
+        System.out.println("Number draws of " + participant.name + " : " + participant.drawCheck);
+    }
+
+    public static void printResults(Human human, Computer computer){
+        int result = human.check + human.drawCheck + computer.check;
+        double personWinRate = ( (double) human.check / (double) result ) * 100;
+        double computerWinRate = ( (double) computer.check / (double) result ) * 100;
+        System.out.println("Person's stats : ");
+        printTable(result, personWinRate, human);
+        System.out.println("\nComputer's stats : ");
+        printTable(result, computerWinRate, computer);
+        if(personWinRate > computerWinRate){
+            System.out.println("\nPerson win!");
+        } else if(personWinRate == computerWinRate){
+            System.out.println("\nNobody won. Draw!");
+        } else {
+            System.out.println("\nComputer win!");
+        }
+    }
+
+    public static void printTable(int result, double winRate, Participants participant){
+        String line = "+----------------------------------------------------------------------+";
+        String secondLine = "|----------------------------------------------------------------------|";
+        String fmt = "|%8s |%10s |%8s |%15s |%20s |\n";
+        System.out.println(line);
+        System.out.printf(fmt, "Win", "Lose", "Draw", "Total games", "Win rate");
+        System.out.println(secondLine);
+        System.out.printf(fmt, participant.check, participant.enemy.check, participant.drawCheck, result, winRate);
+        System.out.println(line);
     }
 }
