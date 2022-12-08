@@ -1,4 +1,4 @@
 public enum Meanings{
-    ROCK, PAPER, SCISSORS
+    ROCK, PAPER, SCISSORS, LIZARD, SPOCK
 
 }
